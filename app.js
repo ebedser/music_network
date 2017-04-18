@@ -36,11 +36,11 @@ class Network {
         for(var i=0;i<this.nodeList.length;i++){
             index = this.nodeList[i].contains.indexOf(nodeA);
             if(index != -1){
-                this.nodeList[i].contains.splice(index,index+1);
+                this.nodeList[i].contains.splice(index,index);
             }
         }
         index = this.nodeList.indexOf(nodeA);
-        this.nodeList.splice(index,index+1);
+        this.nodeList.splice(index,index);
     }
 }
 
@@ -393,8 +393,9 @@ function keydown() {
     case 8: // backspace
     case 46: // delete
       if(selected_node) {
-        nodes.splice(nodes.indexOf(selected_node), 1);
-        spliceLinksForNode(selected_node);
+          aNetwork.delete_catagory(aNetwork.nodeList[nodes.indexOf(selected_node)]); //
+          nodes.splice(nodes.indexOf(selected_node), 1);
+          spliceLinksForNode(selected_node);
       } else if(selected_link) {
         links.splice(links.indexOf(selected_link), 1);
       }
