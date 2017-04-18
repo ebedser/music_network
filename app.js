@@ -30,9 +30,9 @@ var force = d3.layout.force()
     .nodes(nodes)
     .links(links)
     .size([width, height])
-    .linkDistance(150)
-    .charge(-500)
-    .on('tick', tick)
+    .linkDistance(100)
+    .charge(-100)
+    .on('tick', tick);
 
 // define arrow markers for graph links
 svg.append('svg:defs').append('svg:marker')
@@ -371,3 +371,83 @@ d3.select(window)
   .on('keydown', keydown)
   .on('keyup', keyup);
 restart();
+
+// custom data structure starts here
+class Network {
+    constructor(owner){
+        this.owner = owner;  // who owns the Network
+        this.nodeList = [];  // a list of all nodes in the network
+    }
+
+    add_category (name, description="") {
+        var a = new Category(name,description);
+        this.nodeList.push(a);
+    }
+    exists(nodeA){
+        return(this.nodeList.indexOf(nodeA) != -1);
+    }
+    connect (nodeA, nodeB) {
+        /*
+          make nodeA contain nodeB
+          sources can't contain anything
+          nodeA: Category
+          nodeB: Category or Source
+        */
+        if(this.exists(nodeA) && this.exists(nodeB)){
+            nodeA.contains.push(nodeB);
+        }
+    }
+    log_network() {
+        for(var i=0; i < this.nodeList.length; i++){
+            console.log(this.nodeList[i].name +" : "+ this.nodeList[i].description);
+            console.log(this.nodeList[i].contains);
+        }
+    }
+    delete_catagory(nodeA) {
+        if(!this.exists(nodeA)){return;}
+        var index = -1;
+        for(var i=0;i<this.nodeList.length;i++){
+            index = this.nodeList[i].contains.indexOf(nodeA);
+            if(index != -1){
+                this.nodeList[i].contains.splice(index,index+1);
+            }
+        }
+        index = this.nodeList.indexOf(nodeA);
+        this.nodeList.splice(index,index+1);
+    }
+}
+
+class Node {
+    constructor(name, description = ""){
+        this.name = name;
+        this.description = description;
+    }
+}
+
+class Category extends Node {
+    constructor(name, description = ""){
+        super();
+        this.name = name;
+        this.description = description;
+        this.contains = [];
+        this.blackList = [];
+    }
+}
+
+class Source extends Node {
+    constructor(name, description = ""){
+        super();
+        this.name = name;
+        this.description = description;
+        this.blacklist = [];
+    }
+}
+
+// testing for data structure
+var aNetwork = new Network('ebedser');
+aNetwork.add_category('Root', 'all music');
+aNetwork.add_category('Rap');
+aNetwork.connect(aNetwork.nodeList[0],aNetwork.nodeList[1]);
+aNetwork.log_network();
+aNetwork.delete_catagory(aNetwork.nodeList[1]);
+aNetwork.log_network();
