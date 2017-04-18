@@ -116,7 +116,7 @@ var svg = d3.select('body')
 //  - nodes are known by 'id', not by index in array.
 //  - reflexive edges are indicated on the node (as a bold black circle).
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
-var nodes = [{
+/*var nodes = [{
             id: 0
         },
         {
@@ -139,13 +139,16 @@ var nodes = [{
             left: false,
             right: true
         }
-    ];
+        ];*/
+var nodes = [];
+var links = [];
+var lastNodeId = -1;
 //initial network to match initial ds
-aNetwork.add_category('0');
-aNetwork.add_category('1');
-aNetwork.add_category('2');
-aNetwork.connect(aNetwork.nodeList[1], aNetwork.nodeList[0]);
-aNetwork.connect(aNetwork.nodeList[2], aNetwork.nodeList[1]);
+//aNetwork.add_category('0');
+//aNetwork.add_category('1');
+//aNetwork.add_category('2');
+//aNetwork.connect(aNetwork.nodeList[1], aNetwork.nodeList[0]);
+//aNetwork.connect(aNetwork.nodeList[2], aNetwork.nodeList[1]);
 //
 
 // init D3 force layout
@@ -227,6 +230,7 @@ function tick() {
 
 // update graph (called when needed)
 function restart() {
+    aNetwork.log_network();
     // path (link) group
     path = path.data(links);
 
@@ -370,13 +374,12 @@ function restart() {
                     left: false,
                     right: false
                 };
-                aNetwork.connect(aNetwork.nodeList[mousedown_node.id], aNetwork.nodeList[mouseup_node.id]);
                 link[direction] = true;
                 links.push(link);
                 //add connection to network
                 var a = aNetwork.nodeList[nodes.indexOf(link.source)];
                 var b = aNetwork.nodeList[nodes.indexOf(link.target)];
-                aNetwork.connect(b, a);
+                aNetwork.connect(a, b);
             }
 
             // select new link
