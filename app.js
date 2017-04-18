@@ -1,5 +1,79 @@
-// set up SVG for D3
+// music_network by ebedser
+// custom data structure starts here
+class Network {
+    constructor(owner){
+        this.owner = owner;  // who owns the Network
+        this.nodeList = [];  // a list of all nodes in the network
+    }
 
+    add_category (name, description="") {
+        var a = new Category(name,description);
+        this.nodeList.push(a);
+    }
+    exists(nodeA){
+        return(this.nodeList.indexOf(nodeA) != -1);
+    }
+    connect (nodeA, nodeB) {
+        /*
+          make nodeA contain nodeB
+          sources can't contain anything
+          nodeA: Category
+          nodeB: Category or Source
+        */
+        if(this.exists(nodeA) && this.exists(nodeB)){
+            nodeA.contains.push(nodeB);
+        }
+    }
+    log_network() {
+        for(var i=0; i < this.nodeList.length; i++){
+            console.log(this.nodeList[i].name +" : "+ this.nodeList[i].description);
+            console.log(this.nodeList[i].contains);
+        }
+    }
+    delete_catagory(nodeA) {
+        if(!this.exists(nodeA)){return;}
+        var index = -1;
+        for(var i=0;i<this.nodeList.length;i++){
+            index = this.nodeList[i].contains.indexOf(nodeA);
+            if(index != -1){
+                this.nodeList[i].contains.splice(index,index+1);
+            }
+        }
+        index = this.nodeList.indexOf(nodeA);
+        this.nodeList.splice(index,index+1);
+    }
+}
+
+class Node {
+    constructor(name, description = ""){
+        this.name = name;
+        this.description = description;
+    }
+}
+
+class Category extends Node {
+    constructor(name, description = ""){
+        super();
+        this.name = name;
+        this.description = description;
+        this.contains = [];
+        this.blackList = [];
+    }
+}
+
+class Source extends Node {
+    constructor(name, description = ""){
+        super();
+        this.name = name;
+        this.description = description;
+        this.blacklist = [];
+    }
+}
+//testing for data structure
+
+var aNetwork = new Network('ebedser');
+
+// set up SVG for D3
 var width  = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
     height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
     colors = d3.scale.category10();
@@ -24,6 +98,13 @@ var nodes = [
     {source: nodes[0], target: nodes[1], left: false, right: true },
     {source: nodes[1], target: nodes[2], left: false, right: true }
   ];
+//
+aNetwork.add_category('0');
+aNetwork.add_category('1');
+aNetwork.add_category('2');
+aNetwork.connect(aNetwork.nodeList[0],aNetwork.nodeList[1]);
+aNetwork.connect(aNetwork.nodeList[1],aNetwork.nodeList[2]);
+//
 
 // init D3 force layout
 var force = d3.layout.force()
@@ -255,7 +336,7 @@ function mousedown() {
   node.x = point[0];
   node.y = point[1];
   nodes.push(node);
-
+    aNetwork.add_category(node.id);
   restart();
 }
 
@@ -372,82 +453,3 @@ d3.select(window)
   .on('keyup', keyup);
 restart();
 
-// custom data structure starts here
-class Network {
-    constructor(owner){
-        this.owner = owner;  // who owns the Network
-        this.nodeList = [];  // a list of all nodes in the network
-    }
-
-    add_category (name, description="") {
-        var a = new Category(name,description);
-        this.nodeList.push(a);
-    }
-    exists(nodeA){
-        return(this.nodeList.indexOf(nodeA) != -1);
-    }
-    connect (nodeA, nodeB) {
-        /*
-          make nodeA contain nodeB
-          sources can't contain anything
-          nodeA: Category
-          nodeB: Category or Source
-        */
-        if(this.exists(nodeA) && this.exists(nodeB)){
-            nodeA.contains.push(nodeB);
-        }
-    }
-    log_network() {
-        for(var i=0; i < this.nodeList.length; i++){
-            console.log(this.nodeList[i].name +" : "+ this.nodeList[i].description);
-            console.log(this.nodeList[i].contains);
-        }
-    }
-    delete_catagory(nodeA) {
-        if(!this.exists(nodeA)){return;}
-        var index = -1;
-        for(var i=0;i<this.nodeList.length;i++){
-            index = this.nodeList[i].contains.indexOf(nodeA);
-            if(index != -1){
-                this.nodeList[i].contains.splice(index,index+1);
-            }
-        }
-        index = this.nodeList.indexOf(nodeA);
-        this.nodeList.splice(index,index+1);
-    }
-}
-
-class Node {
-    constructor(name, description = ""){
-        this.name = name;
-        this.description = description;
-    }
-}
-
-class Category extends Node {
-    constructor(name, description = ""){
-        super();
-        this.name = name;
-        this.description = description;
-        this.contains = [];
-        this.blackList = [];
-    }
-}
-
-class Source extends Node {
-    constructor(name, description = ""){
-        super();
-        this.name = name;
-        this.description = description;
-        this.blacklist = [];
-    }
-}
-
-// testing for data structure
-var aNetwork = new Network('ebedser');
-aNetwork.add_category('Root', 'all music');
-aNetwork.add_category('Rap');
-aNetwork.connect(aNetwork.nodeList[0],aNetwork.nodeList[1]);
-aNetwork.log_network();
-aNetwork.delete_catagory(aNetwork.nodeList[1]);
-aNetwork.log_network();
