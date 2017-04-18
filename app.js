@@ -47,9 +47,13 @@ class Network {
 
     }
     log_network() {
+        var text = "";
         for (var i = 0; i < this.nodeList.length; i++) {
             console.log(this.nodeList[i].name + " : " + this.nodeList[i].description);
-            console.log(this.nodeList[i].contains);
+            text = "";
+            for(var x=0; x<this.nodeList[i].contains.length; x++)
+                text += (this.nodeList[i].contains[x].name + " ");
+            console.log(text);
         }
     }
     delete_catagory(nodeA) {
@@ -372,7 +376,7 @@ function restart() {
                 //add connection to network
                 var a = aNetwork.nodeList[nodes.indexOf(link.source)];
                 var b = aNetwork.nodeList[nodes.indexOf(link.target)];
-                aNetwork.connect(a, b);
+                aNetwork.connect(b, a);
             }
 
             // select new link
