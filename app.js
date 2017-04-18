@@ -111,9 +111,9 @@ var svg = d3.select('body')
 //  - reflexive edges are indicated on the node (as a bold black circle).
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
 var nodes = [
-    {id: 0, reflexive: false},
-    {id: 1, reflexive: true },
-    {id: 2, reflexive: false}
+    {id: 0},
+    {id: 1},
+    {id: 2}
   ],
   lastNodeId = 2,
   links = [
@@ -124,8 +124,8 @@ var nodes = [
 aNetwork.add_category('0');
 aNetwork.add_category('1');
 aNetwork.add_category('2');
-aNetwork.connect(aNetwork.nodeList[0],aNetwork.nodeList[1]);
-aNetwork.connect(aNetwork.nodeList[1],aNetwork.nodeList[2]);
+aNetwork.connect(aNetwork.nodeList[1],aNetwork.nodeList[0]);
+aNetwork.connect(aNetwork.nodeList[2],aNetwork.nodeList[1]);
 //
 
 // init D3 force layout
@@ -244,7 +244,7 @@ function restart() {
   // update existing nodes (reflexive & selected visual states)
   circle.selectAll('circle')
     .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
-    .classed('reflexive', function(d) { return d.reflexive; });
+    /*.classed('reflexive', function(d) { return d.reflexive; })*/;
 
   // add new nodes
   var g = circle.enter().append('svg:g');
@@ -322,6 +322,10 @@ function restart() {
           aNetwork.connect(aNetwork.nodeList[mousedown_node.id],aNetwork.nodeList[mouseup_node.id]);
           link[direction] = true;
           links.push(link);
+          //add connection to network
+          var a = aNetwork.nodeList[nodes.indexOf(link.source)];
+          var b = aNetwork.nodeList[nodes.indexOf(link.target)];
+          aNetwork.connect(a,b);
       }
 
       // select new link
