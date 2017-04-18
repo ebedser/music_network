@@ -120,7 +120,7 @@ var nodes = [
     {source: nodes[0], target: nodes[1], left: false, right: true },
     {source: nodes[1], target: nodes[2], left: false, right: true }
   ];
-//
+//initial network to match initial ds
 aNetwork.add_category('0');
 aNetwork.add_category('1');
 aNetwork.add_category('2');
@@ -134,7 +134,7 @@ var force = d3.layout.force()
     .links(links)
     .size([width, height])
     .linkDistance(100)
-    .charge(-100)
+    .charge(-300)
     .on('tick', tick);
 
 // define arrow markers for graph links
@@ -318,9 +318,10 @@ function restart() {
       if(link) {
         link[direction] = true;
       } else {
-        link = {source: source, target: target, left: false, right: false};
-        link[direction] = true;
-        links.push(link);
+          link = {source: source, target: target, left: false, right: false};
+          aNetwork.connect(aNetwork.nodeList[mousedown_node.id],aNetwork.nodeList[mouseup_node.id]);
+          link[direction] = true;
+          links.push(link);
       }
 
       // select new link
