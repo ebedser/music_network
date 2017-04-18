@@ -354,13 +354,13 @@ function mousedown() {
   if(d3.event.ctrlKey || mousedown_node || mousedown_link) return;
 
   // insert new node at point
-  var point = d3.mouse(this),
-      node = {id: ++lastNodeId, reflexive: false};
-  node.x = point[0];
-  node.y = point[1];
-  nodes.push(node);
+    var point = d3.mouse(this);
+    var node = {id: ++lastNodeId, reflexive: false};
+    node.x = point[0];
+    node.y = point[1];
+    nodes.push(node);
     aNetwork.add_category(node.id);
-  restart();
+    restart();
 }
 
 function mousemove() {
@@ -420,7 +420,13 @@ function keydown() {
           nodes.splice(nodes.indexOf(selected_node), 1);
           spliceLinksForNode(selected_node);
       } else if(selected_link) {
-        links.splice(links.indexOf(selected_link), 1);
+          links.splice(links.indexOf(selected_link), 1);
+          var l = selected_link;
+          var a = aNetwork.nodeList[nodes.indexOf(l.source)];
+          var b = aNetwork.nodeList[nodes.indexOf(l.target)];
+          console.log(a);
+          console.log(b);
+          aNetwork.delete_connection(a,b);
       }
       selected_link = null;
       selected_node = null;
