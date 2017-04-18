@@ -1,80 +1,82 @@
 // music_network by ebedser
 // custom data structure starts here
 class Network {
-    constructor(owner){
-        this.owner = owner;  // who owns the Network
-        this.nodeList = [];  // a list of all nodes in the network
+    constructor(owner) {
+        this.owner = owner; // who owns the Network
+        this.nodeList = []; // a list of all nodes in the network
     }
 
-    add_category (name, description="") {
-        var a = new Category(name,description);
+    add_category(name, description = "") {
+        var a = new Category(name, description);
         this.nodeList.push(a);
     }
-    exists(nodeA){
-        return(this.nodeList.indexOf(nodeA) != -1);
+    exists(nodeA) {
+        return (this.nodeList.indexOf(nodeA) != -1);
     }
-    connect (nodeA, nodeB) {
+    connect(nodeA, nodeB) {
         /*
           make nodeA contain nodeB
           sources can't contain anything
           nodeA: Category
           nodeB: Category or Source
         */
-        if(this.exists(nodeA) && this.exists(nodeB)){
+        if (this.exists(nodeA) && this.exists(nodeB)) {
             nodeA.contains.push(nodeB);
         }
     }
-    is_connected (nodeA, nodeB) {
+    is_connected(nodeA, nodeB) {
         return (nodeA.contains.indexOf(nodeB) != -1);
     }
-    delete_connection(nodeA, nodeB){
-        if(this.is_connected(nodeA, nodeB)){
+    delete_connection(nodeA, nodeB) {
+        if (this.is_connected(nodeA, nodeB)) {
             var index = nodeA.contains.indexOf(nodeB);
-            nodeA.contains.splice(index,1);
+            nodeA.contains.splice(index, 1);
         }
     }
-    swap_connection (nodeA, nodeB){
+    swap_connection(nodeA, nodeB) {
         var index = 0;
-        if(this.is_connected(nodeA, nodeB)){
+        if (this.is_connected(nodeA, nodeB)) {
             this.delete_connection(nodeA, nodeB);
             this.connect(nodeB, nodeA);
-        }else if(this.is_connected(nodeB, nodeA)){
+        } else if (this.is_connected(nodeB, nodeA)) {
             this.delete_connection(nodeB, nodeA);
             this.connect(nodeA, nodeB);
-        }else{
+        } else {
             console.log("not connected");
         }
 
     }
     log_network() {
-        for(var i=0; i < this.nodeList.length; i++){
-            console.log(this.nodeList[i].name +" : "+ this.nodeList[i].description);
+        for (var i = 0; i < this.nodeList.length; i++) {
+            console.log(this.nodeList[i].name + " : " + this.nodeList[i].description);
             console.log(this.nodeList[i].contains);
         }
     }
     delete_catagory(nodeA) {
-        if(!this.exists(nodeA)){return;}
+        if (!this.exists(nodeA)) {
+            return;
+        }
         var index = -1;
-        for(var i=0;i<this.nodeList.length;i++){
+        for (var i = 0; i < this.nodeList.length; i++) {
             index = this.nodeList[i].contains.indexOf(nodeA);
-            if(index != -1){
-                this.nodeList[i].contains.splice(index,1);
+            if (index != -1) {
+                this.nodeList[i].contains.splice(index, 1);
             }
         }
         index = this.nodeList.indexOf(nodeA);
-        this.nodeList.splice(index,1);
+        this.nodeList.splice(index, 1);
     }
 }
 
 class Node {
-    constructor(name, description = ""){
+    constructor(name, description = "") {
         this.name = name;
         this.description = description;
     }
 }
 
 class Category extends Node {
-    constructor(name, description = ""){
+    constructor(name, description = "") {
         super();
         this.name = name;
         this.description = description;
@@ -84,7 +86,7 @@ class Category extends Node {
 }
 
 class Source extends Node {
-    constructor(name, description = ""){
+    constructor(name, description = "") {
         super();
         this.name = name;
         this.description = description;
@@ -96,36 +98,50 @@ class Source extends Node {
 var aNetwork = new Network('ebedser');
 
 // set up SVG for D3
-var width  = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
     height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
     colors = d3.scale.category10();
 
 var svg = d3.select('body')
-  .append('svg')
-  .attr('oncontextmenu', 'return false;')
-  .attr('width', width)
-  .attr('height', height);
+    .append('svg')
+    .attr('oncontextmenu', 'return false;')
+    .attr('width', width)
+    .attr('height', height);
 
 // set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
 //  - reflexive edges are indicated on the node (as a bold black circle).
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
-var nodes = [
-    {id: 0},
-    {id: 1},
-    {id: 2}
-  ],
-  lastNodeId = 2,
-  links = [
-    {source: nodes[0], target: nodes[1], left: false, right: true },
-    {source: nodes[1], target: nodes[2], left: false, right: true }
-  ];
+var nodes = [{
+            id: 0
+        },
+        {
+            id: 1
+        },
+        {
+            id: 2
+        }
+    ],
+    lastNodeId = 2,
+    links = [{
+            source: nodes[0],
+            target: nodes[1],
+            left: false,
+            right: true
+        },
+        {
+            source: nodes[1],
+            target: nodes[2],
+            left: false,
+            right: true
+        }
+    ];
 //initial network to match initial ds
 aNetwork.add_category('0');
 aNetwork.add_category('1');
 aNetwork.add_category('2');
-aNetwork.connect(aNetwork.nodeList[1],aNetwork.nodeList[0]);
-aNetwork.connect(aNetwork.nodeList[2],aNetwork.nodeList[1]);
+aNetwork.connect(aNetwork.nodeList[1], aNetwork.nodeList[0]);
+aNetwork.connect(aNetwork.nodeList[2], aNetwork.nodeList[1]);
 //
 
 // init D3 force layout
@@ -145,7 +161,7 @@ svg.append('svg:defs').append('svg:marker')
     .attr('markerWidth', 3)
     .attr('markerHeight', 3)
     .attr('orient', 'auto')
-  .append('svg:path')
+    .append('svg:path')
     .attr('d', 'M0,-5L10,0L0,5')
     .attr('fill', '#000');
 
@@ -156,14 +172,14 @@ svg.append('svg:defs').append('svg:marker')
     .attr('markerWidth', 3)
     .attr('markerHeight', 3)
     .attr('orient', 'auto')
-  .append('svg:path')
+    .append('svg:path')
     .attr('d', 'M10,-5L0,0L10,5')
     .attr('fill', '#000');
 
 // line displayed when dragging new nodes
 var drag_line = svg.append('svg:path')
-  .attr('class', 'link dragline hidden')
-  .attr('d', 'M0,0L0,0');
+    .attr('class', 'link dragline hidden')
+    .attr('d', 'M0,0L0,0');
 
 // handles to link and node element groups
 var path = svg.append('svg:g').selectAll('path'),
@@ -177,189 +193,225 @@ var selected_node = null,
     mouseup_node = null;
 
 function resetMouseVars() {
-  mousedown_node = null;
-  mouseup_node = null;
-  mousedown_link = null;
+    mousedown_node = null;
+    mouseup_node = null;
+    mousedown_link = null;
 }
 
 // update force layout (called automatically each iteration)
 function tick() {
-  // draw directed edges with proper padding from node centers
-  path.attr('d', function(d) {
-    var deltaX = d.target.x - d.source.x,
-        deltaY = d.target.y - d.source.y,
-        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
-        normX = deltaX / dist,
-        normY = deltaY / dist,
-        sourcePadding = d.left ? 17 : 12,
-        targetPadding = d.right ? 17 : 12,
-        sourceX = d.source.x + (sourcePadding * normX),
-        sourceY = d.source.y + (sourcePadding * normY),
-        targetX = d.target.x - (targetPadding * normX),
-        targetY = d.target.y - (targetPadding * normY);
-    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
-  });
+    // draw directed edges with proper padding from node centers
+    path.attr('d', function(d) {
+        var deltaX = d.target.x - d.source.x,
+            deltaY = d.target.y - d.source.y,
+            dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+            normX = deltaX / dist,
+            normY = deltaY / dist,
+            sourcePadding = d.left ? 17 : 12,
+            targetPadding = d.right ? 17 : 12,
+            sourceX = d.source.x + (sourcePadding * normX),
+            sourceY = d.source.y + (sourcePadding * normY),
+            targetX = d.target.x - (targetPadding * normX),
+            targetY = d.target.y - (targetPadding * normY);
+        return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+    });
 
-  circle.attr('transform', function(d) {
-    return 'translate(' + d.x + ',' + d.y + ')';
-  });
+    circle.attr('transform', function(d) {
+        return 'translate(' + d.x + ',' + d.y + ')';
+    });
 }
 
 // update graph (called when needed)
 function restart() {
-  // path (link) group
-  path = path.data(links);
+    // path (link) group
+    path = path.data(links);
 
-  // update existing links
-  path.classed('selected', function(d) { return d === selected_link; })
-    .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
-    .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; });
+    // update existing links
+    path.classed('selected', function(d) {
+            return d === selected_link;
+        })
+        .style('marker-start', function(d) {
+            return d.left ? 'url(#start-arrow)' : '';
+        })
+        .style('marker-end', function(d) {
+            return d.right ? 'url(#end-arrow)' : '';
+        });
 
 
-  // add new links
-  path.enter().append('svg:path')
-    .attr('class', 'link')
-    .classed('selected', function(d) { return d === selected_link; })
-    .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
-    .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
-    .on('mousedown', function(d) {
-      if(d3.event.ctrlKey) return;
+    // add new links
+    path.enter().append('svg:path')
+        .attr('class', 'link')
+        .classed('selected', function(d) {
+            return d === selected_link;
+        })
+        .style('marker-start', function(d) {
+            return d.left ? 'url(#start-arrow)' : '';
+        })
+        .style('marker-end', function(d) {
+            return d.right ? 'url(#end-arrow)' : '';
+        })
+        .on('mousedown', function(d) {
+            if (d3.event.ctrlKey) return;
 
-      // select link
-      mousedown_link = d;
-      if(mousedown_link === selected_link) selected_link = null;
-      else selected_link = mousedown_link;
-      selected_node = null;
-      restart();
+            // select link
+            mousedown_link = d;
+            if (mousedown_link === selected_link) selected_link = null;
+            else selected_link = mousedown_link;
+            selected_node = null;
+            restart();
+        });
+
+    // remove old links
+    path.exit().remove();
+
+
+    // circle (node) group
+    // NB: the function arg is crucial here! nodes are known by id, not by index!
+    circle = circle.data(nodes, function(d) {
+        return d.id;
     });
 
-  // remove old links
-  path.exit().remove();
+    // update existing nodes (reflexive & selected visual states)
+    circle.selectAll('circle')
+        .style('fill', function(d) {
+            return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+        })
+    /*.classed('reflexive', function(d) { return d.reflexive; })*/
+    ;
 
+    // add new nodes
+    var g = circle.enter().append('svg:g');
 
-  // circle (node) group
-  // NB: the function arg is crucial here! nodes are known by id, not by index!
-  circle = circle.data(nodes, function(d) { return d.id; });
+    g.append('svg:circle')
+        .attr('class', 'node')
+        .attr('r', 12)
+        .style('fill', function(d) {
+            return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+        })
+        .style('stroke', function(d) {
+            return d3.rgb(colors(d.id)).darker().toString();
+        })
+        .classed('reflexive', function(d) {
+            return d.reflexive;
+        })
+        .on('mouseover', function(d) {
+            if (!mousedown_node || d === mousedown_node) return;
+            // enlarge target node
+            d3.select(this).attr('transform', 'scale(1.1)');
+        })
+        .on('mouseout', function(d) {
+            if (!mousedown_node || d === mousedown_node) return;
+            // unenlarge target node
+            d3.select(this).attr('transform', '');
+        })
+        .on('mousedown', function(d) {
+            if (d3.event.ctrlKey) return;
 
-  // update existing nodes (reflexive & selected visual states)
-  circle.selectAll('circle')
-    .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
-    /*.classed('reflexive', function(d) { return d.reflexive; })*/;
+            // select node
+            mousedown_node = d;
+            if (mousedown_node === selected_node) selected_node = null;
+            else selected_node = mousedown_node;
+            selected_link = null;
 
-  // add new nodes
-  var g = circle.enter().append('svg:g');
+            // reposition drag line
+            drag_line
+                .style('marker-end', 'url(#end-arrow)')
+                .classed('hidden', false)
+                .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
 
-  g.append('svg:circle')
-    .attr('class', 'node')
-    .attr('r', 12)
-    .style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
-    .style('stroke', function(d) { return d3.rgb(colors(d.id)).darker().toString(); })
-    .classed('reflexive', function(d) { return d.reflexive; })
-    .on('mouseover', function(d) {
-      if(!mousedown_node || d === mousedown_node) return;
-      // enlarge target node
-      d3.select(this).attr('transform', 'scale(1.1)');
-    })
-    .on('mouseout', function(d) {
-      if(!mousedown_node || d === mousedown_node) return;
-      // unenlarge target node
-      d3.select(this).attr('transform', '');
-    })
-    .on('mousedown', function(d) {
-      if(d3.event.ctrlKey) return;
+            restart();
+        })
+        .on('mouseup', function(d) {
+            if (!mousedown_node) return;
 
-      // select node
-      mousedown_node = d;
-      if(mousedown_node === selected_node) selected_node = null;
-      else selected_node = mousedown_node;
-      selected_link = null;
+            // needed by FF
+            drag_line
+                .classed('hidden', true)
+                .style('marker-end', '');
 
-      // reposition drag line
-      drag_line
-        .style('marker-end', 'url(#end-arrow)')
-        .classed('hidden', false)
-        .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
+            // check for drag-to-self
+            mouseup_node = d;
+            if (mouseup_node === mousedown_node) {
+                resetMouseVars();
+                return;
+            }
 
-      restart();
-    })
-    .on('mouseup', function(d) {
-      if(!mousedown_node) return;
+            // unenlarge target node
+            d3.select(this).attr('transform', '');
 
-      // needed by FF
-      drag_line
-        .classed('hidden', true)
-        .style('marker-end', '');
+            // add link to graph (update if exists)
+            // NB: links are strictly source < target; arrows separately specified by booleans
+            var source, target, direction;
+            if (mousedown_node.id < mouseup_node.id) {
+                source = mousedown_node;
+                target = mouseup_node;
+                direction = 'right';
+            } else {
+                source = mouseup_node;
+                target = mousedown_node;
+                direction = 'left';
+            }
 
-      // check for drag-to-self
-      mouseup_node = d;
-      if(mouseup_node === mousedown_node) { resetMouseVars(); return; }
+            var link;
+            link = links.filter(function(l) {
+                return (l.source === source && l.target === target);
+            })[0];
 
-      // unenlarge target node
-      d3.select(this).attr('transform', '');
+            if (link) {
+                link[direction] = true;
+            } else {
+                link = {
+                    source: source,
+                    target: target,
+                    left: false,
+                    right: false
+                };
+                aNetwork.connect(aNetwork.nodeList[mousedown_node.id], aNetwork.nodeList[mouseup_node.id]);
+                link[direction] = true;
+                links.push(link);
+                //add connection to network
+                var a = aNetwork.nodeList[nodes.indexOf(link.source)];
+                var b = aNetwork.nodeList[nodes.indexOf(link.target)];
+                aNetwork.connect(a, b);
+            }
 
-      // add link to graph (update if exists)
-      // NB: links are strictly source < target; arrows separately specified by booleans
-      var source, target, direction;
-      if(mousedown_node.id < mouseup_node.id) {
-        source = mousedown_node;
-        target = mouseup_node;
-        direction = 'right';
-      } else {
-        source = mouseup_node;
-        target = mousedown_node;
-        direction = 'left';
-      }
+            // select new link
+            selected_link = link;
+            selected_node = null;
+            restart();
+        });
 
-      var link;
-      link = links.filter(function(l) {
-        return (l.source === source && l.target === target);
-      })[0];
+    // show node IDs
+    g.append('svg:text')
+        .attr('x', 0)
+        .attr('y', 4)
+        .attr('class', 'id')
+        .text(function(d) {
+            return d.id;
+        });
 
-      if(link) {
-        link[direction] = true;
-      } else {
-          link = {source: source, target: target, left: false, right: false};
-          aNetwork.connect(aNetwork.nodeList[mousedown_node.id],aNetwork.nodeList[mouseup_node.id]);
-          link[direction] = true;
-          links.push(link);
-          //add connection to network
-          var a = aNetwork.nodeList[nodes.indexOf(link.source)];
-          var b = aNetwork.nodeList[nodes.indexOf(link.target)];
-          aNetwork.connect(a,b);
-      }
+    // remove old nodes
+    circle.exit().remove();
 
-      // select new link
-      selected_link = link;
-      selected_node = null;
-      restart();
-    });
-
-  // show node IDs
-  g.append('svg:text')
-      .attr('x', 0)
-      .attr('y', 4)
-      .attr('class', 'id')
-      .text(function(d) { return d.id; });
-
-  // remove old nodes
-  circle.exit().remove();
-
-  // set the graph in motion
-  force.start();
+    // set the graph in motion
+    force.start();
 }
 
 function mousedown() {
-  // prevent I-bar on drag
-  //d3.event.preventDefault();
+    // prevent I-bar on drag
+    //d3.event.preventDefault();
 
-  // because :active only works in WebKit?
-  svg.classed('active', true);
+    // because :active only works in WebKit?
+    svg.classed('active', true);
 
-  if(d3.event.ctrlKey || mousedown_node || mousedown_link) return;
+    if (d3.event.ctrlKey || mousedown_node || mousedown_link) return;
 
-  // insert new node at point
+    // insert new node at point
     var point = d3.mouse(this);
-    var node = {id: ++lastNodeId, reflexive: false};
+    var node = {
+        id: ++lastNodeId,
+        reflexive: false
+    };
     node.x = point[0];
     node.y = point[1];
     nodes.push(node);
@@ -368,102 +420,102 @@ function mousedown() {
 }
 
 function mousemove() {
-  if(!mousedown_node) return;
+    if (!mousedown_node) return;
 
-  // update drag line
-  drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
+    // update drag line
+    drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
 
-  restart();
+    restart();
 }
 
 function mouseup() {
-  if(mousedown_node) {
-    // hide drag line
-    drag_line
-      .classed('hidden', true)
-      .style('marker-end', '');
-  }
+    if (mousedown_node) {
+        // hide drag line
+        drag_line
+            .classed('hidden', true)
+            .style('marker-end', '');
+    }
 
-  // because :active only works in WebKit?
-  svg.classed('active', false);
+    // because :active only works in WebKit?
+    svg.classed('active', false);
 
-  // clear mouse event vars
-  resetMouseVars();
+    // clear mouse event vars
+    resetMouseVars();
 }
 
 function spliceLinksForNode(node) {
-  var toSplice = links.filter(function(l) {
-    return (l.source === node || l.target === node);
-  });
-  toSplice.map(function(l) {
-    links.splice(links.indexOf(l), 1);
-  });
+    var toSplice = links.filter(function(l) {
+        return (l.source === node || l.target === node);
+    });
+    toSplice.map(function(l) {
+        links.splice(links.indexOf(l), 1);
+    });
 }
 
 // only respond once per keydown
 var lastKeyDown = -1;
 
 function keydown() {
-  d3.event.preventDefault();
+    d3.event.preventDefault();
 
-  if(lastKeyDown !== -1) return;
-  lastKeyDown = d3.event.keyCode;
+    if (lastKeyDown !== -1) return;
+    lastKeyDown = d3.event.keyCode;
 
-  // ctrl
-  if(d3.event.keyCode === 17) {
-    circle.call(force.drag);
-    svg.classed('ctrl', true);
-  }
+    // ctrl
+    if (d3.event.keyCode === 17) {
+        circle.call(force.drag);
+        svg.classed('ctrl', true);
+    }
 
-  if(!selected_node && !selected_link) return;
-  switch(d3.event.keyCode) {
-    case 8: // backspace
-    case 46: // delete
-      if(selected_node) {
-          aNetwork.delete_catagory(aNetwork.nodeList[nodes.indexOf(selected_node)]); //
-          nodes.splice(nodes.indexOf(selected_node), 1);
-          spliceLinksForNode(selected_node);
-      } else if(selected_link) {
-          links.splice(links.indexOf(selected_link), 1);
-          var l = selected_link;
-          var a = aNetwork.nodeList[nodes.indexOf(l.source)];
-          var b = aNetwork.nodeList[nodes.indexOf(l.target)];
-          console.log(a);
-          console.log(b);
-          aNetwork.delete_connection(a,b);
-      }
-      selected_link = null;
-      selected_node = null;
-      restart();
-      break;
-    
-  case 66: // B
-      /*if(selected_link) {
-        // set link direction to both left and right
-        selected_link.left = true;
-        selected_link.right = true;
-        }*/
-      //toggle direction
-      if(selected_link){
-          selected_link.left = !selected_link.left;
-          selected_link.right = !selected_link.right;
-          var a = aNetwork.nodeList[nodes.indexOf(selected_link.source)];
-          var b =aNetwork.nodeList[nodes.indexOf(selected_link.target)];
-          aNetwork.swap_connection(a,b);
-      }
+    if (!selected_node && !selected_link) return;
+    switch (d3.event.keyCode) {
+        case 8: // backspace
+        case 46: // delete
+            if (selected_node) {
+                aNetwork.delete_catagory(aNetwork.nodeList[nodes.indexOf(selected_node)]); //
+                nodes.splice(nodes.indexOf(selected_node), 1);
+                spliceLinksForNode(selected_node);
+            } else if (selected_link) {
+                links.splice(links.indexOf(selected_link), 1);
+                var l = selected_link;
+                var a = aNetwork.nodeList[nodes.indexOf(l.source)];
+                var b = aNetwork.nodeList[nodes.indexOf(l.target)];
+                console.log(a);
+                console.log(b);
+                aNetwork.delete_connection(a, b);
+            }
+            selected_link = null;
+            selected_node = null;
+            restart();
+            break;
 
-      restart();
-      break;
-/*
-    case 76: // L
-      if(selected_link) {
-        // set link direction to left only
-        selected_link.left = true;
-        selected_link.right = false;
-      }
-      restart();
-      break;*/
-      /*
+        case 66: // B
+            /*if(selected_link) {
+              // set link direction to both left and right
+              selected_link.left = true;
+              selected_link.right = true;
+              }*/
+            //toggle direction
+            if (selected_link) {
+                selected_link.left = !selected_link.left;
+                selected_link.right = !selected_link.right;
+                var a = aNetwork.nodeList[nodes.indexOf(selected_link.source)];
+                var b = aNetwork.nodeList[nodes.indexOf(selected_link.target)];
+                aNetwork.swap_connection(a, b);
+            }
+
+            restart();
+            break;
+            /*
+                case 76: // L
+                  if(selected_link) {
+                    // set link direction to left only
+                    selected_link.left = true;
+                    selected_link.right = false;
+                  }
+                  restart();
+                  break;*/
+            /*
     case 82: // R
       if(selected_node) {
         // toggle node reflexivity
@@ -476,27 +528,26 @@ function keydown() {
       restart();
       break;
       */
-  }
+    }
 }
 
 function keyup() {
-  lastKeyDown = -1;
+    lastKeyDown = -1;
 
-  // ctrl
-  if(d3.event.keyCode === 17) {
-    circle
-      .on('mousedown.drag', null)
-      .on('touchstart.drag', null);
-    svg.classed('ctrl', false);
-  }
+    // ctrl
+    if (d3.event.keyCode === 17) {
+        circle
+            .on('mousedown.drag', null)
+            .on('touchstart.drag', null);
+        svg.classed('ctrl', false);
+    }
 }
 
 // app starts here
 svg.on('mousedown', mousedown)
-  .on('mousemove', mousemove)
-  .on('mouseup', mouseup);
+    .on('mousemove', mousemove)
+    .on('mouseup', mouseup);
 d3.select(window)
-  .on('keydown', keydown)
-  .on('keyup', keyup);
+    .on('keydown', keydown)
+    .on('keyup', keyup);
 restart();
-
