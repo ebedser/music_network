@@ -6,7 +6,7 @@ class Network {
         this.nodeList = []; // a list of all nodes in the network
     }
 
-    add_category(name, description = "") {
+    add_category(id, name="", description = "") {
         var a = new Category(name, description);
         this.nodeList.push(a);
     }
@@ -52,7 +52,7 @@ class Network {
             console.log(this.nodeList[i].name + " : " + this.nodeList[i].description);
             text = "";
             for(var x=0; x<this.nodeList[i].contains.length; x++)
-                text += (this.nodeList[i].contains[x].name + " ");
+                text += (this.nodeList[i].contains[x].id + " ");
             console.log(text);
         }
     }
@@ -73,15 +73,17 @@ class Network {
 }
 
 class Node {
-    constructor(name, description = "") {
+    constructor(id, name, description = "") {
+        this.id = id;
         this.name = name;
         this.description = description;
     }
 }
 
 class Category extends Node {
-    constructor(name, description = "") {
+    constructor(id, name, description = "") {
         super();
+        this.id = id;
         this.name = name;
         this.description = description;
         this.contains = [];
@@ -90,8 +92,9 @@ class Category extends Node {
 }
 
 class Source extends Node {
-    constructor(name, description = "") {
+    constructor(id, name, description = "") {
         super();
+        this.id = id;
         this.name = name;
         this.description = description;
         this.blacklist = [];
@@ -112,44 +115,11 @@ var svg = d3.select('body')
     .attr('width', width)
     .attr('height', height);
 
-// set up initial nodes and links
 //  - nodes are known by 'id', not by index in array.
-//  - reflexive edges are indicated on the node (as a bold black circle).
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
-/*var nodes = [{
-            id: 0
-        },
-        {
-            id: 1
-        },
-        {
-            id: 2
-        }
-    ],
-    lastNodeId = 2,
-    links = [{
-            source: nodes[0],
-            target: nodes[1],
-            left: false,
-            right: true
-        },
-        {
-            source: nodes[1],
-            target: nodes[2],
-            left: false,
-            right: true
-        }
-        ];*/
 var nodes = [];
 var links = [];
 var lastNodeId = -1;
-//initial network to match initial ds
-//aNetwork.add_category('0');
-//aNetwork.add_category('1');
-//aNetwork.add_category('2');
-//aNetwork.connect(aNetwork.nodeList[1], aNetwork.nodeList[0]);
-//aNetwork.connect(aNetwork.nodeList[2], aNetwork.nodeList[1]);
-//
 
 // init D3 force layout
 var force = d3.layout.force()
@@ -279,12 +249,11 @@ function restart() {
         return d.id;
     });
 
-    // update existing nodes (reflexive & selected visual states)
+    // update existing nodes (selected visual state)
     circle.selectAll('circle')
         .style('fill', function(d) {
             return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
         })
-    /*.classed('reflexive', function(d) { return d.reflexive; })*/
     ;
 
     // add new nodes
@@ -417,7 +386,6 @@ function mousedown() {
     var point = d3.mouse(this);
     var node = {
         id: ++lastNodeId,
-        reflexive: false
     };
     node.x = point[0];
     node.y = point[1];
@@ -549,7 +517,20 @@ function keyup() {
         svg.classed('ctrl', false);
     }
 }
-
+function nodeButton(x,y){
+    // insert new node at point
+    var node = {
+        id: ++lastNodeId
+    };
+    node.x = x;
+    node.y = y;
+    nodes.push(node);
+    aNetwork.add_category(node.id);
+    restart();
+}
+var middleX=width/2;
+var middleY=height/2;
+document.getElementById("add_node").onclick = function() {nodeButton(middleX,middleY);};
 // app starts here
 svg.on('mousedown', mousedown)
     .on('mousemove', mousemove)
@@ -558,3 +539,4 @@ d3.select(window)
     .on('keydown', keydown)
     .on('keyup', keyup);
 restart();
+
