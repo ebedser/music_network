@@ -24,6 +24,9 @@ class Network {
             nodeA.contains.push(nodeB);
         }
     }
+    is_connected (nodeA, nodeB) {
+        return (nodeA.contains.indexOf(nodeB) != -1);
+    }
     log_network() {
         for(var i=0; i < this.nodeList.length; i++){
             console.log(this.nodeList[i].name +" : "+ this.nodeList[i].description);
