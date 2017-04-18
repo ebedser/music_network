@@ -27,6 +27,25 @@ class Network {
     is_connected (nodeA, nodeB) {
         return (nodeA.contains.indexOf(nodeB) != -1);
     }
+    delete_connection(nodeA, nodeB){
+        if(this.is_connected(nodeA, nodeB)){
+            var index = nodeA.contains.indexOf(nodeB);
+            nodeA.contains.splice(index,index);
+        }
+    }
+    swap_connection (nodeA, nodeB){
+        var index = 0;
+        if(this.is_connected(nodeA, nodeB)){
+            this.delete_connection(nodeA, nodeB);
+            this.connect(nodeB, nodeA);
+        }else if(this.is_connected(nodeB, nodeA)){
+            this.delete_connection(nodeB, nodeA);
+            this.connect(nodeA, nodeB);
+        }else{
+            console.log("not connected");
+        }
+
+    }
     log_network() {
         for(var i=0; i < this.nodeList.length; i++){
             console.log(this.nodeList[i].name +" : "+ this.nodeList[i].description);
@@ -406,14 +425,25 @@ function keydown() {
       selected_node = null;
       restart();
       break;
-    case 66: // B
-      if(selected_link) {
+    
+  case 66: // B
+      /*if(selected_link) {
         // set link direction to both left and right
         selected_link.left = true;
         selected_link.right = true;
+        }*/
+      //toggle direction
+      if(selected_link){
+          selected_link.left = !selected_link.left;
+          selected_link.right = !selected_link.right;
+          var a = aNetwork.nodeList[nodes.indexOf(selected_link.source)];
+          var b =aNetwork.nodeList[nodes.indexOf(selected_link.target)];
+          aNetwork.swap_connection(a,b);
       }
+
       restart();
       break;
+/*
     case 76: // L
       if(selected_link) {
         // set link direction to left only
@@ -421,7 +451,8 @@ function keydown() {
         selected_link.right = false;
       }
       restart();
-      break;
+      break;*/
+      /*
     case 82: // R
       if(selected_node) {
         // toggle node reflexivity
@@ -433,6 +464,7 @@ function keydown() {
       }
       restart();
       break;
+      */
   }
 }
 
