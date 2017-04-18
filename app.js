@@ -30,7 +30,7 @@ class Network {
     delete_connection(nodeA, nodeB){
         if(this.is_connected(nodeA, nodeB)){
             var index = nodeA.contains.indexOf(nodeB);
-            nodeA.contains.splice(index,index);
+            nodeA.contains.splice(index,1);
         }
     }
     swap_connection (nodeA, nodeB){
@@ -58,11 +58,11 @@ class Network {
         for(var i=0;i<this.nodeList.length;i++){
             index = this.nodeList[i].contains.indexOf(nodeA);
             if(index != -1){
-                this.nodeList[i].contains.splice(index,index);
+                this.nodeList[i].contains.splice(index,1);
             }
         }
         index = this.nodeList.indexOf(nodeA);
-        this.nodeList.splice(index,index);
+        this.nodeList.splice(index,1);
     }
 }
 
