@@ -201,3 +201,7 @@ body.has-active-menu {
 .c-menu--push-right.is-active {
     transform: translateX(0);
 }
+.text_input
+{
+    z-index: 1;
+}

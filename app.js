@@ -425,7 +425,7 @@ function spliceLinksForNode(node) {
         network.links.splice(network.links.indexOf(l), 1);
     });
 }
-
+/*
 // only respond once per keydown
 var lastKeyDown = -1;
 
@@ -498,7 +498,7 @@ function keydown() {
       break;
       */
     }
-}
+}*/
 
 function keyup() {
     lastKeyDown = -1;
