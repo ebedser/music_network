@@ -51,8 +51,8 @@ class Network {
     log_network() {
         var text = "";
         for (var i = 0; i < this.nodeList.length; i++) {
-            console.log(this.nodeList[i].id + " : " + this.nodeList[i].description);
             text = "";
+            text += (this.nodeList[i].id + " : ");
             for(var x=0; x<this.nodeList[i].contains.length; x++)
                 text += (this.nodeList[i].contains[x].id + " ");
             console.log(text);
