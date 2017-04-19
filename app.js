@@ -260,7 +260,6 @@ function restart() {
 
     // add new nodes
     var g = circle.enter().append('svg:g');
-
     g.append('svg:circle')
         .attr('class', 'node')
         .attr('r', 12)
@@ -270,10 +269,8 @@ function restart() {
         .style('stroke', function(d) {
             return d3.rgb(colors(d.id)).darker().toString();
         })
-        //.classed('reflexive', function(d) {
-        //    return d.reflexive;
-        //})
-        .on('mouseover', function(d) {
+        /* mouseover resizing doesn't seem to work currently (from template code)
+          .on('mouseover', function(d) {
             if (!mousedown_node || d === mousedown_node) return;
             // enlarge target node
             d3.select(this).attr('transform', 'scale(1.1)');
@@ -282,10 +279,9 @@ function restart() {
             if (!mousedown_node || d === mousedown_node) return;
             // unenlarge target node
             d3.select(this).attr('transform', '');
-        })
+            })*/
         .on('mousedown', function(d) {
-            if (d3.event.ctrlKey) return;
-
+            if (d3.event.ctrlKey) return; //default drag behavior when holding down ctrl key
             // select node
             mousedown_node = d;
             if (mousedown_node === selected_node) selected_node = null;
@@ -316,18 +312,18 @@ function restart() {
             }
 
             // unenlarge target node
-            d3.select(this).attr('transform', '');
+            //d3.select(this).attr('transform', '');
 
             // add link to graph (update if exists)
             // NB: links are strictly source < target; arrows separately specified by booleans
             var source, target, direction;
-            if (mousedown_node.id < mouseup_node.id) {
+            if (mousedown_node.x < mouseup_node.x) { //need to fix
                 source = mousedown_node;
                 target = mouseup_node;
                 direction = 'right';
             } else {
-                source = mouseup_node;
-                target = mousedown_node;
+                source = mousedown_node;
+                target = mouseup_node;
                 direction = 'left';
             }
 
