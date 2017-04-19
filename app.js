@@ -1,8 +1,7 @@
 // music_network by ebedser
 // custom data structure starts here
 class Network {
-    constructor(owner) {
-        this.owner = owner; // who owns the Network
+    constructor() {
         this.nodeList = []; // a list of all nodes in the network
     }
 
@@ -71,7 +70,7 @@ class Network {
         this.nodeList.splice(index, 1);
     }
 }
-
+var network = new Network();
 class Node {
     constructor(id, name) {
         this.id = id;
@@ -101,7 +100,6 @@ class Source extends Node {
 }
 //testing for data structure
 
-var aNetwork = new Network('ebedser');
 
 // set up SVG for D3
 var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
@@ -345,9 +343,9 @@ function restart() {
                 link[direction] = true;
                 links.push(link);
                 //add connection to network
-                var a = aNetwork.nodeList[nodes.indexOf(link.source)];
-                var b = aNetwork.nodeList[nodes.indexOf(link.target)];
-                aNetwork.connect(a, b);
+                var a = network.nodeList[nodes.indexOf(link.source)];
+                var b = network.nodeList[nodes.indexOf(link.target)];
+                network.connect(a, b);
             }
 
             // select new link
@@ -446,17 +444,17 @@ function keydown() {
         case 8: // backspace
         case 46: // delete
             if (selected_node) {
-                aNetwork.delete_catagory(aNetwork.nodeList[nodes.indexOf(selected_node)]); //
+                network.delete_catagory(network.nodeList[nodes.indexOf(selected_node)]); //
                 nodes.splice(nodes.indexOf(selected_node), 1);
                 spliceLinksForNode(selected_node);
             } else if (selected_link) {
                 links.splice(links.indexOf(selected_link), 1);
                 var l = selected_link;
-                var a = aNetwork.nodeList[nodes.indexOf(l.source)];
-                var b = aNetwork.nodeList[nodes.indexOf(l.target)];
+                var a = network.nodeList[nodes.indexOf(l.source)];
+                var b = network.nodeList[nodes.indexOf(l.target)];
                 console.log(a);
                 console.log(b);
-                aNetwork.delete_connection(a, b);
+                network.delete_connection(a, b);
             }
             selected_link = null;
             selected_node = null;
@@ -464,18 +462,13 @@ function keydown() {
             break;
 
         case 66: // B
-            /*if(selected_link) {
-              // set link direction to both left and right
-              selected_link.left = true;
-              selected_link.right = true;
-              }*/
             //toggle direction
             if (selected_link) {
                 selected_link.left = !selected_link.left;
                 selected_link.right = !selected_link.right;
-                var a = aNetwork.nodeList[nodes.indexOf(selected_link.source)];
-                var b = aNetwork.nodeList[nodes.indexOf(selected_link.target)];
-                aNetwork.swap_connection(a, b);
+                var a = network.nodeList[nodes.indexOf(selected_link.source)];
+                var b = network.nodeList[nodes.indexOf(selected_link.target)];
+                network.swap_connection(a, b);
             }
 
             restart();
@@ -524,13 +517,13 @@ function nodeButton(x,y,name){
     node.x = x;
     node.y = y;
     nodes.push(node);
-    aNetwork.add_category(node.id, name);
+    network.add_category(node.id, name);
     restart();
 }
 var middleX=width/2;
 var middleY=height/2;
 document.getElementById("log_button").onclick = function(){
-    aNetwork.log_network();
+    network.log_network();
 };
 document.getElementById("add_node").onclick = function() {
     nodeButton(middleX,middleY,'');
