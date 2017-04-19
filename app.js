@@ -475,28 +475,6 @@ function keydown() {
 
             restart();
             break;
-            /*
-                case 76: // L
-                  if(selected_link) {
-                    // set link direction to left only
-                    selected_link.left = true;
-                    selected_link.right = false;
-                  }
-                  restart();
-                  break;*/
-            /*
-    case 82: // R
-      if(selected_node) {
-        // toggle node reflexivity
-        selected_node.reflexive = !selected_node.reflexive;
-      } else if(selected_link) {
-        // set link direction to right only
-        selected_link.left = false;
-        selected_link.right = true;
-      }
-      restart();
-      break;
-      */
     }
 }*/
 
@@ -529,7 +507,7 @@ svg.on('mousedown', mousedown)
     .on('mousemove', mousemove)
     .on('mouseup', mouseup);
 d3.select(window)
-    .on('keydown', keydown)
+    //.on('keydown', keydown)
     .on('keyup', keyup);
 restart();
 
