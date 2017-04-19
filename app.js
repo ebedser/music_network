@@ -6,8 +6,8 @@ class Network {
         this.nodeList = []; // a list of all nodes in the network
     }
 
-    add_category(id, name="", description = "") {
-        var a = new Category(name, description);
+    add_category(id, name) {
+        var a = new Category(id, name);
         this.nodeList.push(a);
     }
     exists(nodeA) {
@@ -73,30 +73,29 @@ class Network {
 }
 
 class Node {
-    constructor(id, name, description = "") {
+    constructor(id, name) {
         this.id = id;
         this.name = name;
-        this.description = description;
     }
 }
 
 class Category extends Node {
-    constructor(id, name, description = "") {
+    constructor(id, name) {
         super();
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.description = "";
         this.contains = [];
         this.blackList = [];
     }
 }
 
 class Source extends Node {
-    constructor(id, name, description = "") {
+    constructor(id, name) {
         super();
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.description = "";
         this.blacklist = [];
     }
 }
@@ -200,7 +199,7 @@ function tick() {
 
 // update graph (called when needed)
 function restart() {
-    aNetwork.log_network();
+    //aNetwork.log_network();
     // path (link) group
     path = path.data(links);
 
@@ -381,17 +380,17 @@ function mousedown() {
     svg.classed('active', true);
 
     if (d3.event.ctrlKey || mousedown_node || mousedown_link) return;
-
+/*
     // insert new node at point
     var point = d3.mouse(this);
     var node = {
-        id: ++lastNodeId,
+        id: ++lastNodeId
     };
     node.x = point[0];
     node.y = point[1];
     nodes.push(node);
     aNetwork.add_category(node.id);
-    restart();
+    restart();*/
 }
 
 function mousemove() {
@@ -517,7 +516,7 @@ function keyup() {
         svg.classed('ctrl', false);
     }
 }
-function nodeButton(x,y){
+function nodeButton(x,y,name){
     // insert new node at point
     var node = {
         id: ++lastNodeId
@@ -525,12 +524,17 @@ function nodeButton(x,y){
     node.x = x;
     node.y = y;
     nodes.push(node);
-    aNetwork.add_category(node.id);
+    aNetwork.add_category(node.id, name);
     restart();
 }
 var middleX=width/2;
 var middleY=height/2;
-document.getElementById("add_node").onclick = function() {nodeButton(middleX,middleY);};
+document.getElementById("log_button").onclick = function(){
+    aNetwork.log_network();
+};
+document.getElementById("add_node").onclick = function() {
+    nodeButton(middleX,middleY,'');
+};
 // app starts here
 svg.on('mousedown', mousedown)
     .on('mousemove', mousemove)
