@@ -1,19 +1,45 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>Music Network</title>
     <link rel="stylesheet" href="app.css">
-  </head>
-  <body>
-  <select name="node_type">
+</head>
+
+<body>
+    <div id="o-wrapper" class="o-wrapper">
+
+        <button id="c-button--slide-right" class="c-button">Slide Right</button>
+        <select name="node_type">
       <option value="catagory">Catagory</option>
       <option value="source">Source</option>
   </select>
-  <input id="add_node" type="button" value="Add Node"/>
-  <input id="log_button" type="button" value="log"/>
-  </body>
-  <script type="'text/javascript" src="config.js"></script>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="app.js"></script>
+        <input id="add_node" type="button" value="Add Node" />
+        <input id="log_button" type="button" value="log" />
+        <!-- other content in here -->
+
+    </div>
+    <!-- /o-wrapper -->
+
+    <!-- menus here -->
+    <div id="c-mask" class="c-mask"></div>
+    <!-- /c-mask -->
+</body>
+<nav id="c-menu--slide-right" class="c-menu c-menu--slide-right">
+    <button class="c-menu__close">&larr; Close Menu</button>
+    <ul class="c-menu__items">
+        <li class="c-menu__item"><a href="#" class="c-menu__link">1</a></li>
+        <li class="c-menu__item"><a href="#" class="c-menu__link">2</a></li>
+        <li class="c-menu__item"><a href="#" class="c-menu__link">3</a></li>
+        <li class="c-menu__item"><a href="#" class="c-menu__link">4</a></li>
+        <li class="c-menu__item"><a href="#" class="c-menu__link">5</a></li>
+    </ul>
+</nav>
+<!-- /c-menu slide-right -->
+<script type="text/javascript" src="menu.js"></script>
+<script type="'text/javascript" src="config.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="app.js"></script>
+
 </html>
