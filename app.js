@@ -322,8 +322,8 @@ function restart() {
                 target = mouseup_node;
                 direction = 'right';
             } else {
-                source = mousedown_node;
-                target = mouseup_node;
+                source = mouseup_node;
+                target = mousedown_node;
                 direction = 'left';
             }
 
@@ -346,7 +346,8 @@ function restart() {
                 //add connection to network
                 var a = network.nodeList[network.nodeList.indexOf(link.source)];
                 var b = network.nodeList[network.nodeList.indexOf(link.target)];
-                network.connect(a, b);
+                if(direction == 'right'){network.connect(b, a);}
+                else{network.connect(a,b);}
             }
 
             // select new link
