@@ -3,10 +3,13 @@
 class Network {
     constructor() {
         this.nodeList = []; // a list of all nodes in the network
+        //this.nodes = [];
+        this.links = [];
+        this.lastNodeId = 0;
     }
 
-    add_category(id, name) {
-        var a = new Category(id, name);
+    add_category(name, x, y) {
+        var a = new Category(this.lastNodeId++, name, x, y);
         this.nodeList.push(a);
     }
     exists(nodeA) {
@@ -48,7 +51,7 @@ class Network {
     log_network() {
         var text = "";
         for (var i = 0; i < this.nodeList.length; i++) {
-            console.log(this.nodeList[i].name + " : " + this.nodeList[i].description);
+            console.log(this.nodeList[i].id + " : " + this.nodeList[i].description);
             text = "";
             for(var x=0; x<this.nodeList[i].contains.length; x++)
                 text += (this.nodeList[i].contains[x].id + " ");
@@ -72,9 +75,11 @@ class Network {
 }
 var network = new Network();
 class Node {
-    constructor(id, name) {
+    constructor(id, name, x, y) {
         this.id = id;
         this.name = name;
+        this.x = x;
+        this.y = y;
     }
 }
 
@@ -114,14 +119,14 @@ var svg = d3.select('body')
 
 //  - nodes are known by 'id', not by index in array.
 //  - links are always source < target; edge directions are set by 'left' and 'right'.
-var nodes = [];
-var links = [];
-var lastNodeId = -1;
+//var nodes = [];
+//var links = [];
+//var lastNodeId = -1;
 
 // init D3 force layout
 var force = d3.layout.force()
-    .nodes(nodes)
-    .links(links)
+    .nodes(network.nodeList) //network.
+    .links(network.links) //network.
     .size([width, height])
     .linkDistance(100)
     .charge(-300)
@@ -199,7 +204,7 @@ function tick() {
 function restart() {
     //aNetwork.log_network();
     // path (link) group
-    path = path.data(links);
+    path = path.data(network.links);
 
     // update existing links
     path.classed('selected', function(d) {
@@ -242,7 +247,7 @@ function restart() {
 
     // circle (node) group
     // NB: the function arg is crucial here! nodes are known by id, not by index!
-    circle = circle.data(nodes, function(d) {
+    circle = circle.data(network.nodeList, function(d) {
         return d.id;
     });
 
@@ -265,9 +270,9 @@ function restart() {
         .style('stroke', function(d) {
             return d3.rgb(colors(d.id)).darker().toString();
         })
-        .classed('reflexive', function(d) {
-            return d.reflexive;
-        })
+        //.classed('reflexive', function(d) {
+        //    return d.reflexive;
+        //})
         .on('mouseover', function(d) {
             if (!mousedown_node || d === mousedown_node) return;
             // enlarge target node
@@ -327,7 +332,7 @@ function restart() {
             }
 
             var link;
-            link = links.filter(function(l) {
+            link = network.links.filter(function(l) {
                 return (l.source === source && l.target === target);
             })[0];
 
@@ -341,10 +346,10 @@ function restart() {
                     right: false
                 };
                 link[direction] = true;
-                links.push(link);
+                network.links.push(link);
                 //add connection to network
-                var a = network.nodeList[nodes.indexOf(link.source)];
-                var b = network.nodeList[nodes.indexOf(link.target)];
+                var a = network.nodeList[network.nodeList.indexOf(link.source)];
+                var b = network.nodeList[network.nodeList.indexOf(link.target)];
                 network.connect(a, b);
             }
 
@@ -420,7 +425,7 @@ function spliceLinksForNode(node) {
         return (l.source === node || l.target === node);
     });
     toSplice.map(function(l) {
-        links.splice(links.indexOf(l), 1);
+        network.links.splice(network.links.indexOf(l), 1);
     });
 }
 
@@ -444,14 +449,14 @@ function keydown() {
         case 8: // backspace
         case 46: // delete
             if (selected_node) {
-                network.delete_catagory(network.nodeList[nodes.indexOf(selected_node)]); //
-                nodes.splice(nodes.indexOf(selected_node), 1);
+                network.delete_catagory(network.nodeList[network.nodeList.indexOf(selected_node)]); //
+                network.nodeList.splice(network.nodeList.indexOf(selected_node), 1);
                 spliceLinksForNode(selected_node);
             } else if (selected_link) {
-                links.splice(links.indexOf(selected_link), 1);
+                network.links.splice(network.links.indexOf(selected_link), 1);
                 var l = selected_link;
-                var a = network.nodeList[nodes.indexOf(l.source)];
-                var b = network.nodeList[nodes.indexOf(l.target)];
+                var a = network.nodeList[network.nodeList.indexOf(l.source)];
+                var b = network.nodeList[network.nodeList.indexOf(l.target)];
                 console.log(a);
                 console.log(b);
                 network.delete_connection(a, b);
@@ -466,8 +471,8 @@ function keydown() {
             if (selected_link) {
                 selected_link.left = !selected_link.left;
                 selected_link.right = !selected_link.right;
-                var a = network.nodeList[nodes.indexOf(selected_link.source)];
-                var b = network.nodeList[nodes.indexOf(selected_link.target)];
+                var a = network.nodeList[network.nodeList.indexOf(selected_link.source)];
+                var b = network.nodeList[network.nodeList.indexOf(selected_link.target)];
                 network.swap_connection(a, b);
             }
 
@@ -511,13 +516,7 @@ function keyup() {
 }
 function nodeButton(x,y,name){
     // insert new node at point
-    var node = {
-        id: ++lastNodeId
-    };
-    node.x = x;
-    node.y = y;
-    nodes.push(node);
-    network.add_category(node.id, name);
+    network.add_category(name, x, y);
     restart();
 }
 var middleX=width/2;
