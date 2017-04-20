@@ -24,7 +24,7 @@ class Network {
         */
         if (this.exists(nodeA) && this.exists(nodeB)) {
             nodeA.contains.push(nodeB);
-        }
+        }2
     }
     is_connected(nodeA, nodeB) {
         return (nodeA.contains.indexOf(nodeB) != -1);
@@ -114,7 +114,7 @@ var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 
 var svg = d3.select('body')
     .append('svg')
     .attr('oncontextmenu', 'return false;')
-    .attr('width', width)
+    //.attr('width', width)
     .attr('height', height);
 
 //  - nodes are known by 'id', not by index in array.
@@ -254,7 +254,8 @@ function restart() {
     // update existing nodes (selected visual state)
     circle.selectAll('circle')
         .style('fill', function(d) {
-            return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+           // return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+            return (d === selected_node) ? d3.rgb(132,189,0).brighter().toString() : d3.rgb(132,189,0);
         })
     ;
 
@@ -264,10 +265,10 @@ function restart() {
         .attr('class', 'node')
         .attr('r', 12)
         .style('fill', function(d) {
-            return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+            return d3.rgb(132,189,0).toString();
         })
         .style('stroke', function(d) {
-            return d3.rgb(colors(d.id)).darker().toString();
+            return d3.rgb(132,189,0).darker().toString();
         })
         /* mouseover resizing doesn't seem to work currently (from template code)
           .on('mouseover', function(d) {
@@ -284,8 +285,14 @@ function restart() {
             if (d3.event.ctrlKey) return; //default drag behavior when holding down ctrl key
             // select node
             mousedown_node = d;
-            if (mousedown_node === selected_node) selected_node = null;
-            else selected_node = mousedown_node;
+            if (mousedown_node === selected_node){
+                selected_node = null;
+                //closeNav();
+            }
+            else{
+                selected_node = mousedown_node;
+                //openNav();
+                }
             selected_link = null;
 
             // reposition drag line
@@ -511,139 +518,14 @@ d3.select(window)
     .on('keyup', keyup);
 restart();
 
-// menu code
-(function(window) {
+/* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginLeft = "250px";
+}
 
-  'use strict';
-
-  /**
-   * Extend Object helper function.
-   */
-  function extend(a, b) {
-    for(var key in b) { 
-      if(b.hasOwnProperty(key)) {
-        a[key] = b[key];
-      }
-    }
-    return a;
-  }
-
-  /**
-   * Each helper function.
-   */
-  function each(collection, callback) {
-    for (var i = 0; i < collection.length; i++) {
-      var item = collection[i];
-      callback(item);
-    }
-  }
-
-  /**
-   * Menu Constructor.
-   */
-  function Menu(options) {
-    this.options = extend({}, this.options);
-    extend(this.options, options);
-    this._init();
-  }
-
-  /**
-   * Menu Options.
-   */
-  Menu.prototype.options = {
-    wrapper: '#o-wrapper',          // The content wrapper
-    type: 'slide-left',             // The menu type
-    menuOpenerClass: '.c-button',   // The menu opener class names (i.e. the buttons)
-    maskId: '#c-mask'               // The ID of the mask
-  };
-
-  /**
-   * Initialise Menu.
-   */
-  Menu.prototype._init = function() {
-    this.body = document.body;
-    this.wrapper = document.querySelector(this.options.wrapper);
-    this.mask = document.querySelector(this.options.maskId);
-    this.menu = document.querySelector('#c-menu--' + this.options.type);
-    this.closeBtn = this.menu.querySelector('.c-menu__close');
-    this.menuOpeners = document.querySelectorAll(this.options.menuOpenerClass);
-    this._initEvents();
-  };
-
-  /**
-   * Initialise Menu Events.
-   */
-  Menu.prototype._initEvents = function() {
-    // Event for clicks on the close button inside the menu.
-    this.closeBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      this.close();
-    }.bind(this));
-
-    // Event for clicks on the mask.
-    this.mask.addEventListener('click', function(e) {
-      e.preventDefault();
-      this.close();
-    }.bind(this));
-  };
-
-  /**
-   * Open Menu.
-   */
-  Menu.prototype.open = function() {
-    this.body.classList.add('has-active-menu');
-    this.wrapper.classList.add('has-' + this.options.type);
-    this.menu.classList.add('is-active');
-    this.mask.classList.add('is-active');
-    this.disableMenuOpeners();
-  };
-
-  /**
-   * Close Menu.
-   */
-  Menu.prototype.close = function() {
-    this.body.classList.remove('has-active-menu');
-    this.wrapper.classList.remove('has-' + this.options.type);
-    this.menu.classList.remove('is-active');
-    this.mask.classList.remove('is-active');
-    this.enableMenuOpeners();
-  };
-
-  /**
-   * Disable Menu Openers.
-   */
-  Menu.prototype.disableMenuOpeners = function() {
-    each(this.menuOpeners, function(item) {
-      item.disabled = true;
-    });
-  };
-
-  /**
-   * Enable Menu Openers.
-   */
-  Menu.prototype.enableMenuOpeners = function() {
-    each(this.menuOpeners, function(item) {
-      item.disabled = false;
-    });
-  };
-
-  /**
-   * Add to global namespace.
-   */
-  window.Menu = Menu;
-
-})(window);
-
-var slideRight = new Menu({
-    wrapper: '#o-wrapper',
-    type: 'slide-right',
-    menuOpenerClass: '.c-button',
-    maskId: '#c-mask'
-});
-
-var slideRightBtn = document.querySelector('#c-button--slide-right');
-
-slideRightBtn.addEventListener('click', function(e) {
-    e.preventDefault;
-    slideRight.open();
-});
+/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+}
