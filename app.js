@@ -535,6 +535,11 @@ function closeNav() {
     document.getElementById("main").style.marginLeft = "0";
     navbarStatus = false;
 }
+
+function toggleNav() {
+    if(navbarStatus){closeNav();}
+    else{openNav();}
+}
 /* navbarStatus
  * when navbar is open:
  * -click on empty space: create node there
