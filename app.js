@@ -103,7 +103,6 @@ class Source extends Node {
         this.blacklist = [];
     }
 }
-//testing for data structure
 
 
 // set up SVG for D3
@@ -176,7 +175,7 @@ function resetMouseVars() {
     mouseup_node = null;
     mousedown_link = null;
 }
-
+var navbarStatus = false;
 // update force layout (called automatically each iteration)
 function tick() {
     // draw directed edges with proper padding from node centers
@@ -386,18 +385,24 @@ function mousedown() {
     // because :active only works in WebKit?
     svg.classed('active', true);
 
-    if (d3.event.ctrlKey || mousedown_node || mousedown_link) return;
-/*
-    // insert new node at point
-    var point = d3.mouse(this);
-    var node = {
-        id: ++lastNodeId
-    };
-    node.x = point[0];
-    node.y = point[1];
-    nodes.push(node);
-    aNetwork.add_category(node.id);
-    restart();*/
+    if (/*d3.event.ctrlKey ||*/ mousedown_node || mousedown_link) return;
+    if(navbarStatus){
+        // insert new node at point
+        var point = d3.mouse(this);
+        network.add_category(point[0],point[1],'');
+        restart();
+    }
+        /*
+        var point = d3.mouse(this);
+        var node = {
+            id: ++lastNodeId
+        };
+        node.x = point[0];
+        node.y = point[1];
+        nodes.push(node);
+        aNetwork.add_category(node.id);
+        restart();
+    }*/
 }
 
 function mousemove() {
@@ -484,7 +489,7 @@ function keydown() {
             break;
     }
 }*/
-
+/*
 function keyup() {
     lastKeyDown = -1;
 
@@ -495,7 +500,7 @@ function keyup() {
             .on('touchstart.drag', null);
         svg.classed('ctrl', false);
     }
-}
+}*/
 function nodeButton(x,y,name){
     // insert new node at point
     network.add_category(name, x, y);
@@ -513,19 +518,31 @@ document.getElementById("add_node").onclick = function() {
 svg.on('mousedown', mousedown)
     .on('mousemove', mousemove)
     .on('mouseup', mouseup);
-d3.select(window)
+//d3.select(window)
     //.on('keydown', keydown)
-    .on('keyup', keyup);
+    //.on('keyup', keyup);
 restart();
 
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
     document.getElementById("main").style.marginLeft = "250px";
+    navbarStatus = true;
 }
 
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("main").style.marginLeft = "0";
+    navbarStatus = false;
 }
+/* navbarStatus
+ * when navbar is open:
+ * -click on empty space: create node there
+ * -click on node: select node and update navbar info/options
+ * when navbar is closed:
+ * -click on empty space: does nothing
+ * -click on node: drag behavior
+ *
+ *
+ */
