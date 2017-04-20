@@ -24,7 +24,7 @@ class Network {
         */
         if (this.exists(nodeA) && this.exists(nodeB)) {
             nodeA.contains.push(nodeB);
-        }
+        }2
     }
     is_connected(nodeA, nodeB) {
         return (nodeA.contains.indexOf(nodeB) != -1);
@@ -103,7 +103,6 @@ class Source extends Node {
         this.blacklist = [];
     }
 }
-//testing for data structure
 
 
 // set up SVG for D3
@@ -114,7 +113,7 @@ var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 
 var svg = d3.select('body')
     .append('svg')
     .attr('oncontextmenu', 'return false;')
-    .attr('width', width)
+    //.attr('width', width)
     .attr('height', height);
 
 //  - nodes are known by 'id', not by index in array.
@@ -176,7 +175,7 @@ function resetMouseVars() {
     mouseup_node = null;
     mousedown_link = null;
 }
-
+var navbarStatus = false;
 // update force layout (called automatically each iteration)
 function tick() {
     // draw directed edges with proper padding from node centers
@@ -254,7 +253,7 @@ function restart() {
     // update existing nodes (selected visual state)
     circle.selectAll('circle')
         .style('fill', function(d) {
-            return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+            return (d === selected_node) ? d3.rgb(132,189,0).brighter().toString() : d3.rgb(132,189,0);
         })
     ;
 
@@ -264,28 +263,32 @@ function restart() {
         .attr('class', 'node')
         .attr('r', 12)
         .style('fill', function(d) {
-            return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+            return d3.rgb(132,189,0).toString();
         })
         .style('stroke', function(d) {
-            return d3.rgb(colors(d.id)).darker().toString();
+            return d3.rgb(132,189,0).darker().toString();
         })
-        /* mouseover resizing doesn't seem to work currently (from template code)
+         //mouseover resizing 
           .on('mouseover', function(d) {
-            if (!mousedown_node || d === mousedown_node) return;
             // enlarge target node
             d3.select(this).attr('transform', 'scale(1.1)');
         })
         .on('mouseout', function(d) {
-            if (!mousedown_node || d === mousedown_node) return;
             // unenlarge target node
             d3.select(this).attr('transform', '');
-            })*/
+            })
         .on('mousedown', function(d) {
-            if (d3.event.ctrlKey) return; //default drag behavior when holding down ctrl key
+            if (!navbarStatus) return; //default drag behavior when holding down ctrl key
             // select node
             mousedown_node = d;
-            if (mousedown_node === selected_node) selected_node = null;
-            else selected_node = mousedown_node;
+            if (mousedown_node === selected_node){
+                selected_node = null;
+                //closeNav();
+            }
+            else{
+                selected_node = mousedown_node;
+                //openNav();
+                }
             selected_link = null;
 
             // reposition drag line
@@ -297,7 +300,7 @@ function restart() {
             restart();
         })
         .on('mouseup', function(d) {
-            if (!mousedown_node) return;
+            if (!mousedown_node || !navbarStatus) return;
 
             // needed by FF
             drag_line
@@ -379,18 +382,26 @@ function mousedown() {
     // because :active only works in WebKit?
     svg.classed('active', true);
 
-    if (d3.event.ctrlKey || mousedown_node || mousedown_link) return;
-/*
-    // insert new node at point
-    var point = d3.mouse(this);
-    var node = {
-        id: ++lastNodeId
-    };
-    node.x = point[0];
-    node.y = point[1];
-    nodes.push(node);
-    aNetwork.add_category(node.id);
-    restart();*/
+    if (/*d3.event.ctrlKey ||*/ mousedown_node || mousedown_link) return;
+    if(navbarStatus){
+        // insert new node at point
+        var point = d3.mouse(this);
+        network.add_category("",point[0],point[1]);
+        restart();
+    }else{
+        circle.call(force.drag);
+    }
+        /*
+        var point = d3.mouse(this);
+        var node = {
+            id: ++lastNodeId
+        };
+        node.x = point[0];
+        node.y = point[1];
+        nodes.push(node);
+        aNetwork.add_category(node.id);
+        restart();
+    }*/
 }
 
 function mousemove() {
@@ -425,7 +436,7 @@ function spliceLinksForNode(node) {
         network.links.splice(network.links.indexOf(l), 1);
     });
 }
-
+/*
 // only respond once per keydown
 var lastKeyDown = -1;
 
@@ -475,31 +486,9 @@ function keydown() {
 
             restart();
             break;
-            /*
-                case 76: // L
-                  if(selected_link) {
-                    // set link direction to left only
-                    selected_link.left = true;
-                    selected_link.right = false;
-                  }
-                  restart();
-                  break;*/
-            /*
-    case 82: // R
-      if(selected_node) {
-        // toggle node reflexivity
-        selected_node.reflexive = !selected_node.reflexive;
-      } else if(selected_link) {
-        // set link direction to right only
-        selected_link.left = false;
-        selected_link.right = true;
-      }
-      restart();
-      break;
-      */
     }
-}
-
+}*/
+/*
 function keyup() {
     lastKeyDown = -1;
 
@@ -510,7 +499,7 @@ function keyup() {
             .on('touchstart.drag', null);
         svg.classed('ctrl', false);
     }
-}
+}*/
 function nodeButton(x,y,name){
     // insert new node at point
     network.add_category(name, x, y);
@@ -528,8 +517,31 @@ document.getElementById("add_node").onclick = function() {
 svg.on('mousedown', mousedown)
     .on('mousemove', mousemove)
     .on('mouseup', mouseup);
-d3.select(window)
-    .on('keydown', keydown)
-    .on('keyup', keyup);
+//d3.select(window)
+    //.on('keydown', keydown)
+    //.on('keyup', keyup);
 restart();
 
+/* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginLeft = "250px";
+    navbarStatus = true;
+}
+
+/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+    navbarStatus = false;
+}
+/* navbarStatus
+ * when navbar is open:
+ * -click on empty space: create node there
+ * -click on node: select node and update navbar info/options
+ * when navbar is closed:
+ * -click on empty space: does nothing
+ * -click on node: drag behavior
+ *
+ *
+ */

@@ -1,19 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>Music Network</title>
     <link rel="stylesheet" href="app.css">
-  </head>
-  <body>
-  <select name="node_type">
-      <option value="catagory">Catagory</option>
-      <option value="source">Source</option>
-  </select>
-  <input id="add_node" type="button" value="Add Node"/>
-  <input id="log_button" type="button" value="log"/>
-  </body>
-  <script type="'text/javascript" src="config.js"></script>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="app.js"></script>
+</head>
+
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <select class="title_item" name="node_type">
+            <option value="catagory">Catagory</option>
+            <option value="source">Source</option>
+        </select>
+        <input class="title_item" id="add_node" type="button" value="Add Node" />
+        <input class="title_item" id="log_button" type="button" value="log" />
+    </div>
+
+    <div id="main">
+        <div class="titlebar">
+            <span class="title_item" onclick="openNav()">&#9776;</span>
+            <span class="main_title">Music Network</span>
+        </div>
+    </div>
+
+</body>
+
+<script type="'text/javascript" src="config.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="app.js"></script>
+
 </html>
