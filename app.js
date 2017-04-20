@@ -281,7 +281,7 @@ function restart() {
             d3.select(this).attr('transform', '');
             })*/
         .on('mousedown', function(d) {
-            if (d3.event.ctrlKey) return; //default drag behavior when holding down ctrl key
+            if (!navbarStatus) return; //default drag behavior when holding down ctrl key
             // select node
             mousedown_node = d;
             if (mousedown_node === selected_node){
@@ -303,7 +303,7 @@ function restart() {
             restart();
         })
         .on('mouseup', function(d) {
-            if (!mousedown_node) return;
+            if (!mousedown_node || !navbarStatus) return;
 
             // needed by FF
             drag_line
@@ -391,6 +391,8 @@ function mousedown() {
         var point = d3.mouse(this);
         network.add_category(point[0],point[1],'');
         restart();
+    }else{
+        circle.call(force.drag);
     }
         /*
         var point = d3.mouse(this);
