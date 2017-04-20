@@ -10,19 +10,18 @@
 <body>
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <p>item1</p>
-        <p>item2</p>
+        <select class="title_item" name="node_type">
+            <option value="catagory">Catagory</option>
+            <option value="source">Source</option>
+        </select>
+        <input class="title_item" id="add_node" type="button" value="Add Node" />
+        <input class="title_item" id="log_button" type="button" value="log" />
     </div>
 
     <div id="main">
         <div class="titlebar">
             <span class="title_item" onclick="openNav()">&#9776;</span>
-            <select class="title_item" name="node_type">
-                <option value="catagory">Catagory</option>
-                <option value="source">Source</option>
-            </select>
-            <input class="title_item" id="add_node" type="button" value="Add Node" />
-            <input class="title_item" id="log_button" type="button" value="log" />
+            <span class="main_title">Music Network</span>
         </div>
     </div>
 
