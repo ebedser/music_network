@@ -253,7 +253,6 @@ function restart() {
     // update existing nodes (selected visual state)
     circle.selectAll('circle')
         .style('fill', function(d) {
-           // return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
             return (d === selected_node) ? d3.rgb(132,189,0).brighter().toString() : d3.rgb(132,189,0);
         })
     ;
@@ -269,17 +268,15 @@ function restart() {
         .style('stroke', function(d) {
             return d3.rgb(132,189,0).darker().toString();
         })
-        /* mouseover resizing doesn't seem to work currently (from template code)
+         //mouseover resizing 
           .on('mouseover', function(d) {
-            if (!mousedown_node || d === mousedown_node) return;
             // enlarge target node
             d3.select(this).attr('transform', 'scale(1.1)');
         })
         .on('mouseout', function(d) {
-            if (!mousedown_node || d === mousedown_node) return;
             // unenlarge target node
             d3.select(this).attr('transform', '');
-            })*/
+            })
         .on('mousedown', function(d) {
             if (!navbarStatus) return; //default drag behavior when holding down ctrl key
             // select node
@@ -389,7 +386,7 @@ function mousedown() {
     if(navbarStatus){
         // insert new node at point
         var point = d3.mouse(this);
-        network.add_category(point[0],point[1],'');
+        network.add_category("",point[0],point[1]);
         restart();
     }else{
         circle.call(force.drag);

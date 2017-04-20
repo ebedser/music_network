@@ -15,7 +15,7 @@ svg {
 }
 
 svg:not(.active):not(.ctrl) {
-  cursor: crosshair;
+ //cursor: crosshair;
 }
 
 path.link {
@@ -43,7 +43,7 @@ path.link.hidden {
 
 circle.node {
     stroke-width: 1.5px;
-  cursor: pointer;
+    cursor: pointer;
 }
 
 
