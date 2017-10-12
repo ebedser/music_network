@@ -24,7 +24,7 @@ class Network {
         */
         if (this.exists(nodeA) && this.exists(nodeB)) {
             nodeA.contains.push(nodeB);
-        }2
+        }
     }
     is_connected(nodeA, nodeB) {
         return (nodeA.contains.indexOf(nodeB) != -1);
@@ -116,12 +116,6 @@ var svg = d3.select('body')
     //.attr('width', width)
     .attr('height', height);
 
-//  - nodes are known by 'id', not by index in array.
-//  - links are always source < target; edge directions are set by 'left' and 'right'.
-//var nodes = [];
-//var links = [];
-//var lastNodeId = -1;
-
 // init D3 force layout
 var force = d3.layout.force()
     .nodes(network.nodeList) //network.
@@ -197,6 +191,15 @@ function tick() {
     circle.attr('transform', function(d) {
         return 'translate(' + d.x + ',' + d.y + ')';
     });
+
+    network.nodeList.forEach(function (node) {
+        if(navbarStatus){
+            node.fixed = true;
+        }
+        else{
+            node.fixed = false;
+        }
+    });
 }
 
 // update graph (called when needed)
@@ -249,7 +252,7 @@ function restart() {
     circle = circle.data(network.nodeList, function(d) {
         return d.id;
     });
-
+    
     // update existing nodes (selected visual state)
     circle.selectAll('circle')
         .style('fill', function(d) {
@@ -278,16 +281,14 @@ function restart() {
             d3.select(this).attr('transform', '');
             })
         .on('mousedown', function(d) {
-            if (!navbarStatus) return; //default drag behavior when holding down ctrl key
+            if (!navbarStatus) return;
             // select node
             mousedown_node = d;
             if (mousedown_node === selected_node){
                 selected_node = null;
-                //closeNav();
             }
             else{
                 selected_node = mousedown_node;
-                //openNav();
                 }
             selected_link = null;
 
@@ -376,32 +377,15 @@ function restart() {
 }
 
 function mousedown() {
-    // prevent I-bar on drag
-    //d3.event.preventDefault();
-
     // because :active only works in WebKit?
     svg.classed('active', true);
-
-    if (/*d3.event.ctrlKey ||*/ mousedown_node || mousedown_link) return;
+    if ( mousedown_node || mousedown_link) return;
     if(navbarStatus){
         // insert new node at point
         var point = d3.mouse(this);
         network.add_category("",point[0],point[1]);
         restart();
-    }else{
-        circle.call(force.drag);
     }
-        /*
-        var point = d3.mouse(this);
-        var node = {
-            id: ++lastNodeId
-        };
-        node.x = point[0];
-        node.y = point[1];
-        nodes.push(node);
-        aNetwork.add_category(node.id);
-        restart();
-    }*/
 }
 
 function mousemove() {
@@ -488,18 +472,6 @@ function keydown() {
             break;
     }
 }*/
-/*
-function keyup() {
-    lastKeyDown = -1;
-
-    // ctrl
-    if (d3.event.keyCode === 17) {
-        circle
-            .on('mousedown.drag', null)
-            .on('touchstart.drag', null);
-        svg.classed('ctrl', false);
-    }
-}*/
 function nodeButton(x,y,name){
     // insert new node at point
     network.add_category(name, x, y);
@@ -507,12 +479,6 @@ function nodeButton(x,y,name){
 }
 var middleX=width/2;
 var middleY=height/2;
-document.getElementById("log_button").onclick = function(){
-    network.log_network();
-};
-document.getElementById("add_node").onclick = function() {
-    nodeButton(middleX,middleY,'');
-};
 // app starts here
 svg.on('mousedown', mousedown)
     .on('mousemove', mousemove)
@@ -533,20 +499,15 @@ function openNav() {
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("main").style.marginLeft = "0";
+    //selected_node = null;
+    //selected_link = null;
     navbarStatus = false;
+
 }
 
 function toggleNav() {
     if(navbarStatus){closeNav();}
     else{openNav();}
 }
-/* navbarStatus
- * when navbar is open:
- * -click on empty space: create node there
- * -click on node: select node and update navbar info/options
- * when navbar is closed:
- * -click on empty space: does nothing
- * -click on node: drag behavior
- *
- *
- */
+var x = document.getElementById("test");
+x.text = d3.mouse(svg);

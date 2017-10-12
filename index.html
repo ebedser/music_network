@@ -9,22 +9,36 @@
 
 <body>
     <div id="mySidenav" class="sidenav">
-        <select class="title_item" name="node_type">
-            <option value="catagory">Catagory</option>
-            <option value="source">Source</option>
-        </select>
-        <input class="title_item" id="add_node" type="button" value="Add Node" />
-        <input class="title_item" id="log_button" type="button" value="log" />
+        <p id="navItem"><a href="playListPage.html"></a></p>
+        <p id="navItem">Name:</p>
+        <p id="navItem">Description:</p>
+        <p id="navItem">Contents:</p>
+        <p id="navItem">
+            <select class="title_item" name="node_type">
+                <option value="catagory">Catagory</option>
+                <option value="source">Source</option>
+            </select>
+        </p>
+        <p id="navItem">
+            <input type="button" value="Log to Console" onclick="network.log_network()"/>
+        </p>
+        <p id="navItem">
+            <input type="button" value="Delete Node"/>
+        </p>
     </div>
 
     <div id="main">
         <div class="titlebar">
             <span class="title_item" onclick="toggleNav()">&#9776;</span>
             <span class="main_title">Music Network</span>
+            <span id="test">test</span>
         </div>
     </div>
 
 </body>
+<script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+<script src="https://d3js.org/d3-selection.v1.min.js"></script>
+<script src="https://d3js.org/d3-drag.v1.min.js"></script>
 
 <script type="'text/javascript" src="config.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>

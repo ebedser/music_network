@@ -66,13 +66,11 @@ text.id {
     left: 0;
     background-color: #828282; /* Black*/
     overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 60px; /* Place content 60px from the top */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
 }
 
 /* The navigation menu links */
-.sidenav p, a{
-    padding: 8px 8px 8px 32px;
+.sidenav p{
     text-decoration: none;
     font-size: 25px;
     color: #ffffff;
@@ -82,17 +80,8 @@ text.id {
 
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover, p:hover, .offcanvas a:focus{
-    color: #84bd00;
 }
 
-/* Position and style the close button (top right corner) */
-.sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
@@ -111,6 +100,7 @@ text.id {
     padding: 10px;
     font-size: 18px;
 }
+
 
 .titlebar span {
     color: #ffffff;
